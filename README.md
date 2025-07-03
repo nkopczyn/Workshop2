@@ -1,1 +1,2 @@
-# Workshop-2-
+# Workshop2
+# Warsztat DAO
