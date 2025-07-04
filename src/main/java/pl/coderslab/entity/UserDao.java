@@ -6,6 +6,7 @@ public class UserDao {
 
     private static final String CREATE_QUERY = "INSERT INTO workshop2 (email, username, password) VALUES (?, ?, ?)";
     private static final String CHECK_ID = "SELECT * FROM workshop2 WHERE id = ?";
+    private static final String DELETE_QUERY = "DELETE FROM workshop2 WHERE id = ?";
 
 
     // creating new user
@@ -49,7 +50,7 @@ public class UserDao {
                     // if id is in the database, checks if the sql query returned at least one row
                     // there is a row with the given id
 
-                    System.out.println("ID found in database");
+                    //System.out.println("ID found in database");
 
                     // retrieve info
                     User userResult = new User();
@@ -62,7 +63,7 @@ public class UserDao {
                     return userResult;
 
                 } else {
-                    System.out.println("ID not found in database");
+                    //System.out.println("ID not found in database");
                     return null;
                 }
             }
@@ -73,4 +74,29 @@ public class UserDao {
             return null;
         }
     }
+
+
+    // delete method
+    public static void deleteUser(int idUser) {
+        User userToDelete = readUser(idUser);
+
+        try
+                (Connection connection = DbUtil.getConnection();
+                 PreparedStatement preparedStatement3 = connection.prepareStatement(DELETE_QUERY)) {
+
+            preparedStatement3.setInt(1, idUser);
+            preparedStatement3.executeUpdate();
+
+            // if the id doesn't exist nothing gets printed, maybe fix that?
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
 }
+

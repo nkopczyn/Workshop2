@@ -12,9 +12,11 @@ public class MainDao {
 
         //System.out.println(user.getUserName());
 
-        User readUserResult = UserDao.readUser(4);
+        User readUserResult = UserDao.readUser(3);
         System.out.println(readUserResult.getUserName());
         System.out.println(readUserResult.getPassword());
+
+        UserDao.deleteUser(5);
 
 
 
