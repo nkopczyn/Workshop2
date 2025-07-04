@@ -1,5 +1,7 @@
 package pl.coderslab.entity;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import java.sql.*;
 import java.util.Arrays;
 
@@ -60,7 +62,7 @@ public class UserDao {
                     userResult.setId(resultSet2.getInt("id"));
                     userResult.setEmail(resultSet2.getString("email"));
                     userResult.setUserName(resultSet2.getString("username"));
-                    userResult.setPassword(resultSet2.getString("password"));
+                    userResult.setPassword(hashPassword(resultSet2.getString("password")));
 
                     // print info, need to call getter to see user's info
                     return userResult;
@@ -107,7 +109,7 @@ public class UserDao {
 
             preparedStatement4.setString(1, user.getEmail());
             preparedStatement4.setString(2, user.getUserName());
-            preparedStatement4.setString(3, user.getPassword());
+            preparedStatement4.setString(3, hashPassword(user.getPassword()));
             preparedStatement4.setInt(4, user.getId());
 
             preparedStatement4.executeUpdate();
@@ -135,7 +137,7 @@ public class UserDao {
                 userResultHolder.setId(resultSet5.getInt("id"));
                 userResultHolder.setEmail(resultSet5.getString("email"));
                 userResultHolder.setUserName(resultSet5.getString("username"));
-                userResultHolder.setPassword(resultSet5.getString("password"));
+                userResultHolder.setPassword(hashPassword(resultSet5.getString("password")));
 
                 usersAll = addToArray(userResultHolder, usersAll);
 
@@ -156,6 +158,10 @@ public class UserDao {
         User[] tmpUsers = Arrays.copyOf(users, users.length + 1);
         tmpUsers[users.length] = u;
         return tmpUsers;
+    }
+
+    public static String hashPassword(String password) {
+        return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
 }
