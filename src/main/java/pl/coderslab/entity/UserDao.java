@@ -1,12 +1,15 @@
 package pl.coderslab.entity;
 
 import java.sql.*;
+import java.util.Arrays;
 
 public class UserDao {
 
     private static final String CREATE_QUERY = "INSERT INTO workshop2 (email, username, password) VALUES (?, ?, ?)";
     private static final String CHECK_ID = "SELECT * FROM workshop2 WHERE id = ?";
     private static final String DELETE_QUERY = "DELETE FROM workshop2 WHERE id = ?";
+    private static final String UPDATE_QUERY = "UPDATE workshop2 SET email = ?, username = ?, password = ? WHERE id = ?";
+    private static final String SELECT_ALL_QUERY = "SELECT * FROM workshop2";
 
 
     // creating new user
@@ -82,7 +85,7 @@ public class UserDao {
 
         try
                 (Connection connection = DbUtil.getConnection();
-                 PreparedStatement preparedStatement3 = connection.prepareStatement(DELETE_QUERY)) {
+                 PreparedStatement preparedStatement3 = connection.prepareStatement(UPDATE_QUERY)) {
 
             preparedStatement3.setInt(1, idUser);
             preparedStatement3.executeUpdate();
@@ -95,8 +98,69 @@ public class UserDao {
         }
     }
 
+    // update method
+    public static void updateUser(User user) {
+
+        try
+                (Connection connection = DbUtil.getConnection();
+                 PreparedStatement preparedStatement4 = connection.prepareStatement(UPDATE_QUERY)) {
+
+            preparedStatement4.setString(1, user.getEmail());
+            preparedStatement4.setString(2, user.getUserName());
+            preparedStatement4.setString(3, user.getPassword());
+            preparedStatement4.setInt(4, user.getId());
+
+            preparedStatement4.executeUpdate();
 
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    // find all
+    public static User[] findAll() {
+
+        User[] usersAll = new User[0];
+
+        try (Connection connection = DbUtil.getConnection();
+             PreparedStatement preparedStatement5 = connection.prepareStatement(SELECT_ALL_QUERY)) {
+
+            ResultSet resultSet5 = preparedStatement5.executeQuery();
+
+            while (resultSet5.next()) {
+
+                User userResultHolder = new User();
+                userResultHolder.setId(resultSet5.getInt("id"));
+                userResultHolder.setEmail(resultSet5.getString("email"));
+                userResultHolder.setUserName(resultSet5.getString("username"));
+                userResultHolder.setPassword(resultSet5.getString("password"));
+
+                usersAll = addToArray(userResultHolder, usersAll);
+
+            }
+
+            return usersAll;
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+
+    private static User[] addToArray(User u, User[] users) {
+        User[] tmpUsers = Arrays.copyOf(users, users.length + 1);
+        tmpUsers[users.length] = u;
+        return tmpUsers;
+    }
 
 }
+
+
+
+
 
